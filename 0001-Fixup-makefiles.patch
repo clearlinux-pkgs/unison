@@ -1,4 +1,4 @@
-From 5e9a3f1b53c3ebc4a7fa4e29fa586262f5b49f4e Mon Sep 17 00:00:00 2001
+From 331d43ce92271e549758efc03acd40e3e8a3aafe Mon Sep 17 00:00:00 2001
 From: "Brett T. Warden" <brett.t.warden@intel.com>
 Date: Wed, 23 May 2018 18:07:20 -0700
 Subject: [PATCH] Fixup makefiles
@@ -6,13 +6,13 @@ Subject: [PATCH] Fixup makefiles
 Replace overloaded use of CFLAGS in OCaml commands. Set and create
 installation directory.
 ---
- src/Makefile                 |  5 ++---
+ src/Makefile                 |  6 +++---
  src/Makefile.OCaml           | 12 ++++++------
  src/fsmonitor/linux/Makefile |  4 ++--
- 3 files changed, 10 insertions(+), 11 deletions(-)
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/src/Makefile b/src/Makefile
-index 53b7856..0ba1b14 100644
+index 53b7856..6db706c 100644
 --- a/src/Makefile
 +++ b/src/Makefile
 @@ -68,7 +68,7 @@ include Makefile.OCaml
@@ -24,7 +24,7 @@ index 53b7856..0ba1b14 100644
  
  # This has two names because on OSX the file INSTALL shadows the target 'install'!
  install: doinstall
-@@ -86,9 +86,8 @@ doinstall: buildexecutable
+@@ -86,9 +86,9 @@ doinstall: buildexecutable
  	    echo "makefile variable NAME not bound"; \
  	    exit 1 \
            ; fi 
@@ -32,6 +32,7 @@ index 53b7856..0ba1b14 100644
 +	mkdir -p $(INSTALLDIR)
  	cp $(NAME)$(EXEC_EXT) $(INSTALLDIR)
 -	cp $(NAME)$(EXEC_EXT) $(INSTALLDIR)$(NAME)-$(MAJORVERSION)$(EXEC_EXT)
++	cp $(NAME)-fsmonitor$(EXEC_EXT) $(INSTALLDIR)
  
  ######################################################################
  # Demo

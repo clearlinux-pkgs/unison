@@ -4,7 +4,7 @@
 #
 Name     : unison
 Version  : 2.51.2
-Release  : 1
+Release  : 2
 URL      : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Source0  : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Summary  : No detailed summary available
@@ -35,11 +35,11 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1527124221
+export SOURCE_DATE_EPOCH=1527192082
 make  %{?_smp_mflags}
 
 %install
-export SOURCE_DATE_EPOCH=1527124221
+export SOURCE_DATE_EPOCH=1527192082
 rm -rf %{buildroot}
 %make_install
 
@@ -49,3 +49,4 @@ rm -rf %{buildroot}
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/unison
+/usr/bin/unison-fsmonitor
