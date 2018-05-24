@@ -1,0 +1,112 @@
+From 5e9a3f1b53c3ebc4a7fa4e29fa586262f5b49f4e Mon Sep 17 00:00:00 2001
+From: "Brett T. Warden" <brett.t.warden@intel.com>
+Date: Wed, 23 May 2018 18:07:20 -0700
+Subject: [PATCH] Fixup makefiles
+
+Replace overloaded use of CFLAGS in OCaml commands. Set and create
+installation directory.
+---
+ src/Makefile                 |  5 ++---
+ src/Makefile.OCaml           | 12 ++++++------
+ src/fsmonitor/linux/Makefile |  4 ++--
+ 3 files changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index 53b7856..0ba1b14 100644
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -68,7 +68,7 @@ include Makefile.OCaml
+ ######################################################################
+ # Installation
+ 
+-INSTALLDIR = $(HOME)/bin/
++INSTALLDIR = $(DESTDIR)/usr/bin/
+ 
+ # This has two names because on OSX the file INSTALL shadows the target 'install'!
+ install: doinstall
+@@ -86,9 +86,8 @@ doinstall: buildexecutable
+ 	    echo "makefile variable NAME not bound"; \
+ 	    exit 1 \
+           ; fi 
+-	-mv $(INSTALLDIR)/$(NAME)$(EXEC_EXT) /tmp/$(NAME)-$(shell echo $$$$)
++	mkdir -p $(INSTALLDIR)
+ 	cp $(NAME)$(EXEC_EXT) $(INSTALLDIR)
+-	cp $(NAME)$(EXEC_EXT) $(INSTALLDIR)$(NAME)-$(MAJORVERSION)$(EXEC_EXT)
+ 
+ ######################################################################
+ # Demo
+diff --git a/src/Makefile.OCaml b/src/Makefile.OCaml
+index 7cefa2e..6ab1402 100644
+--- a/src/Makefile.OCaml
++++ b/src/Makefile.OCaml
+@@ -267,7 +267,7 @@ endif
+ # console when click-started
+ #  ifeq ($(OSARCH), win32)
+ #    COBJS+=winmain.c
+-#    CFLAGS+=-cclib /subsystem:windows
++#    CAMLLINKFLAGS+=-cclib /subsystem:windows
+ #  endif
+ 
+ # Gtk GUI
+@@ -307,7 +307,7 @@ INCLFLAGS+=-I fsmonitor -I fsmonitor/linux -I fsmonitor/windows
+ ### Static build setup
+ 
+ ifeq ($(STATIC), true)
+-  CFLAGS+=-cclib -static
++  CAMLLINKFLAGS+=-cclib -static
+ endif
+ 
+ ####################################################################
+@@ -360,7 +360,7 @@ ifeq ($(DEBUGGING), false)
+     ifneq ($(OSARCH), osx)
+       # Strip the binary (does not work with MS compiler; might not work
+       # under OSX)
+-      CFLAGS+=-cclib -Wl,-s
++      CAMLLINKFLAGS+=-cclib -Wl,-s
+     endif
+   endif
+ endif
+@@ -428,13 +428,13 @@ fswatch.cmi : ubase/prefs.cmi
+ 
+ $(NAME)$(EXEC_EXT): $(CAMLOBJS) $(COBJS)
+ 	@echo Linking $@
+-	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CFLAGS) $(CAMLLIBS) $^ $(CLIBS)
++	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CAMLLINKFLAGS) $(CAMLLIBS) $^ $(CLIBS)
+ 
+ # Unfortunately -output-obj does not put .o files into the output, only .cmx
+ # files, so we have to use $(LD) to take care of COBJS.
+ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
+ 	@echo Linking $@
+-	$(CAMLC) -dstartup -output-obj -verbose -cclib -keep_private_externs $(CAMLFLAGS) -o u-b.o $(CFLAGS) $(CAMLLIBS) $(CLIBS) $(CAMLOBJS)
++	$(CAMLC) -dstartup -output-obj -verbose -cclib -keep_private_externs $(CAMLFLAGS) -o u-b.o $(CAMLLINKFLAGS) $(CAMLLIBS) $(CLIBS) $(CAMLOBJS)
+ 	$(LD) -r -keep_private_externs -o $@ u-b.o $(COBJS)
+ 	$(RM) u-b.o
+ 
+@@ -442,7 +442,7 @@ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
+ # Original:
+ # $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
+ # 	@echo Linking $@
+-# 	$(CAMLC) -output-obj -verbose $(CAMLFLAGS) -o u-b.o $(CFLAGS) $(CAMLLIBS) $(CLIBS) $(CAMLOBJS)
++# 	$(CAMLC) -output-obj -verbose $(CAMLFLAGS) -o u-b.o $(CAMLLINKFLAGS) $(CAMLLIBS) $(CLIBS) $(CAMLOBJS)
+ # 	$(LD) -r -o $@ u-b.o $(COBJS)
+ # 	$(RM) u-b.o
+ 
+diff --git a/src/fsmonitor/linux/Makefile b/src/fsmonitor/linux/Makefile
+index a8f3d6d..d3f1091 100644
+--- a/src/fsmonitor/linux/Makefile
++++ b/src/fsmonitor/linux/Makefile
+@@ -22,8 +22,8 @@ buildexecutable:: $(FSMONITOR)$(EXEC_EXT)
+ 
+ $(FSMONITOR)$(EXEC_EXT): $(FSMCAMLOBJS) $(FSMCOBJS)
+ 	@echo Linking $@
+-	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
++	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CAMLLINKFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
+ 
+ clean::
+ 	rm -f $(DIR)/*.cm[iox] $(DIR)/*.o $(DIR)/*~
+-	rm -f $(FSMONITOR)$(EXEC_EXT)
+\ No newline at end of file
++	rm -f $(FSMONITOR)$(EXEC_EXT)
+-- 
+2.17.0
+
