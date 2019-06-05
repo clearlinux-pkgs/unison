@@ -4,7 +4,7 @@
 #
 Name     : unison
 Version  : 2.51.2
-Release  : 2
+Release  : 3
 URL      : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Source0  : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Summary  : No detailed summary available
