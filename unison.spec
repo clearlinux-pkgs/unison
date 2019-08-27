@@ -4,13 +4,14 @@
 #
 Name     : unison
 Version  : 2.51.2
-Release  : 3
+Release  : 4
 URL      : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Source0  : https://github.com/bcpierce00/unison/archive/v2.51.2.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-3.0
-Requires: unison-bin
+Requires: unison-bin = %{version}-%{release}
+Requires: unison-license = %{version}-%{release}
 BuildRequires : ocaml
 Patch1: 0001-Fixup-makefiles.patch
 
@@ -21,9 +22,18 @@ src/unison_tables.ml.
 %package bin
 Summary: bin components for the unison package.
 Group: Binaries
+Requires: unison-license = %{version}-%{release}
 
 %description bin
 bin components for the unison package.
+
+
+%package license
+Summary: license components for the unison package.
+Group: Default
+
+%description license
+license components for the unison package.
 
 
 %prep
@@ -34,13 +44,25 @@ bin components for the unison package.
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1527192082
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1566934204
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 make  %{?_smp_mflags}
 
+
 %install
-export SOURCE_DATE_EPOCH=1527192082
+export SOURCE_DATE_EPOCH=1566934204
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/unison
+cp LICENSE %{buildroot}/usr/share/package-licenses/unison/LICENSE
+cp src/COPYING %{buildroot}/usr/share/package-licenses/unison/src_COPYING
 %make_install
 
 %files
@@ -50,3 +72,8 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 /usr/bin/unison
 /usr/bin/unison-fsmonitor
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/unison/LICENSE
+/usr/share/package-licenses/unison/src_COPYING
