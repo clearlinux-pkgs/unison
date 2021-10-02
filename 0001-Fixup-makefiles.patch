@@ -1,4 +1,4 @@
-From 331d43ce92271e549758efc03acd40e3e8a3aafe Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: "Brett T. Warden" <brett.t.warden@intel.com>
 Date: Wed, 23 May 2018 18:07:20 -0700
 Subject: [PATCH] Fixup makefiles
@@ -8,14 +8,14 @@ installation directory.
 ---
  src/Makefile                 |  6 +++---
  src/Makefile.OCaml           | 12 ++++++------
- src/fsmonitor/linux/Makefile |  4 ++--
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ src/fsmonitor/linux/Makefile |  2 +-
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/src/Makefile b/src/Makefile
-index 53b7856..6db706c 100644
+index f109b93..9a5d661 100644
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -68,7 +68,7 @@ include Makefile.OCaml
+@@ -59,7 +59,7 @@ include Makefile.OCaml
  ######################################################################
  # Installation
  
@@ -24,10 +24,10 @@ index 53b7856..6db706c 100644
  
  # This has two names because on OSX the file INSTALL shadows the target 'install'!
  install: doinstall
-@@ -86,9 +86,9 @@ doinstall: buildexecutable
+@@ -77,9 +77,9 @@ doinstall: buildexecutable
  	    echo "makefile variable NAME not bound"; \
  	    exit 1 \
-           ; fi 
+ 	  ; fi
 -	-mv $(INSTALLDIR)/$(NAME)$(EXEC_EXT) /tmp/$(NAME)-$(shell echo $$$$)
 +	mkdir -p $(INSTALLDIR)
  	cp $(NAME)$(EXEC_EXT) $(INSTALLDIR)
@@ -37,10 +37,10 @@ index 53b7856..6db706c 100644
  ######################################################################
  # Demo
 diff --git a/src/Makefile.OCaml b/src/Makefile.OCaml
-index 7cefa2e..6ab1402 100644
+index 6cfb069..60a0b78 100644
 --- a/src/Makefile.OCaml
 +++ b/src/Makefile.OCaml
-@@ -267,7 +267,7 @@ endif
+@@ -259,7 +259,7 @@ endif
  # console when click-started
  #  ifeq ($(OSARCH), win32)
  #    COBJS+=winmain.c
@@ -49,7 +49,7 @@ index 7cefa2e..6ab1402 100644
  #  endif
  
  # Gtk GUI
-@@ -307,7 +307,7 @@ INCLFLAGS+=-I fsmonitor -I fsmonitor/linux -I fsmonitor/windows
+@@ -311,7 +311,7 @@ DEP_INCLFLAGS+=-I fsmonitor -I fsmonitor/linux -I fsmonitor/solaris -I fsmonitor
  ### Static build setup
  
  ifeq ($(STATIC), true)
@@ -58,7 +58,7 @@ index 7cefa2e..6ab1402 100644
  endif
  
  ####################################################################
-@@ -360,7 +360,7 @@ ifeq ($(DEBUGGING), false)
+@@ -364,7 +364,7 @@ ifeq ($(DEBUGGING), false)
      ifneq ($(OSARCH), osx)
        # Strip the binary (does not work with MS compiler; might not work
        # under OSX)
@@ -67,12 +67,12 @@ index 7cefa2e..6ab1402 100644
      endif
    endif
  endif
-@@ -428,13 +428,13 @@ fswatch.cmi : ubase/prefs.cmi
+@@ -436,13 +436,13 @@ fswatch.cmi : ubase/prefs.cmi
  
  $(NAME)$(EXEC_EXT): $(CAMLOBJS) $(COBJS)
  	@echo Linking $@
--	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CFLAGS) $(CAMLLIBS) $^ $(CLIBS)
-+	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CAMLLINKFLAGS) $(CAMLLIBS) $^ $(CLIBS)
+-	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CFLAGS) $(CAMLLIBS) $^ $(CLIBS)
++	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CAMLLINKFLAGS) $(CAMLLIBS) $^ $(CLIBS)
  
  # Unfortunately -output-obj does not put .o files into the output, only .cmx
  # files, so we have to use $(LD) to take care of COBJS.
@@ -83,7 +83,7 @@ index 7cefa2e..6ab1402 100644
  	$(LD) -r -keep_private_externs -o $@ u-b.o $(COBJS)
  	$(RM) u-b.o
  
-@@ -442,7 +442,7 @@ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
+@@ -450,7 +450,7 @@ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
  # Original:
  # $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
  # 	@echo Linking $@
@@ -93,21 +93,15 @@ index 7cefa2e..6ab1402 100644
  # 	$(RM) u-b.o
  
 diff --git a/src/fsmonitor/linux/Makefile b/src/fsmonitor/linux/Makefile
-index a8f3d6d..d3f1091 100644
+index 557994b..16e46f4 100644
 --- a/src/fsmonitor/linux/Makefile
 +++ b/src/fsmonitor/linux/Makefile
-@@ -22,8 +22,8 @@ buildexecutable:: $(FSMONITOR)$(EXEC_EXT)
+@@ -22,7 +22,7 @@ buildexecutable:: $(FSMONITOR)$(EXEC_EXT)
  
  $(FSMONITOR)$(EXEC_EXT): $(FSMCAMLOBJS) $(FSMCOBJS)
  	@echo Linking $@
--	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
-+	$(CAMLC) -verbose $(CAMLFLAGS) -o $@ $(CAMLLINKFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
+-	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
++	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CAMLLINKFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
  
  clean::
  	rm -f $(DIR)/*.cm[iox] $(DIR)/*.o $(DIR)/*~
--	rm -f $(FSMONITOR)$(EXEC_EXT)
-\ No newline at end of file
-+	rm -f $(FSMONITOR)$(EXEC_EXT)
--- 
-2.17.0
-
