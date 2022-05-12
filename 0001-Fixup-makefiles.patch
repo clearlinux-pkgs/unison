@@ -37,19 +37,19 @@ index f109b93..9a5d661 100644
  ######################################################################
  # Demo
 diff --git a/src/Makefile.OCaml b/src/Makefile.OCaml
-index 6cfb069..60a0b78 100644
+index 2397742..4387b30 100644
 --- a/src/Makefile.OCaml
 +++ b/src/Makefile.OCaml
-@@ -259,7 +259,7 @@ endif
- # console when click-started
- #  ifeq ($(OSARCH), win32)
+@@ -284,7 +284,7 @@ endif
+ ifeq ($(OSARCH), win32)
+   ifneq ($(UISTYLE), text)
  #    COBJS+=winmain.c
--#    CFLAGS+=-cclib /subsystem:windows
-+#    CAMLLINKFLAGS+=-cclib /subsystem:windows
- #  endif
+-    CFLAGS+=-ccopt "-link -Wl,--subsystem,windows"
++    CAMLLINKFLAGS+=-ccopt "-link -Wl,--subsystem,windows"
+   endif
+ endif
  
- # Gtk GUI
-@@ -311,7 +311,7 @@ DEP_INCLFLAGS+=-I fsmonitor -I fsmonitor/linux -I fsmonitor/solaris -I fsmonitor
+@@ -337,7 +337,7 @@ DEP_INCLFLAGS+=-I fsmonitor -I fsmonitor/linux -I fsmonitor/solaris -I fsmonitor
  ### Static build setup
  
  ifeq ($(STATIC), true)
@@ -58,7 +58,7 @@ index 6cfb069..60a0b78 100644
  endif
  
  ####################################################################
-@@ -364,7 +364,7 @@ ifeq ($(DEBUGGING), false)
+@@ -390,7 +390,7 @@ ifeq ($(DEBUGGING), false)
      ifneq ($(OSARCH), osx)
        # Strip the binary (does not work with MS compiler; might not work
        # under OSX)
@@ -67,7 +67,7 @@ index 6cfb069..60a0b78 100644
      endif
    endif
  endif
-@@ -436,13 +436,13 @@ fswatch.cmi : ubase/prefs.cmi
+@@ -469,13 +469,13 @@ compat%.cmx: compat%.ml
  
  $(NAME)$(EXEC_EXT): $(CAMLOBJS) $(COBJS)
  	@echo Linking $@
@@ -83,7 +83,7 @@ index 6cfb069..60a0b78 100644
  	$(LD) -r -keep_private_externs -o $@ u-b.o $(COBJS)
  	$(RM) u-b.o
  
-@@ -450,7 +450,7 @@ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
+@@ -483,7 +483,7 @@ $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
  # Original:
  # $(NAME)-blob.o: $(CAMLOBJS) $(COBJS)
  # 	@echo Linking $@
@@ -93,12 +93,12 @@ index 6cfb069..60a0b78 100644
  # 	$(RM) u-b.o
  
 diff --git a/src/fsmonitor/linux/Makefile b/src/fsmonitor/linux/Makefile
-index 557994b..16e46f4 100644
+index f6905d8..3d1758b 100644
 --- a/src/fsmonitor/linux/Makefile
 +++ b/src/fsmonitor/linux/Makefile
 @@ -22,7 +22,7 @@ buildexecutable:: $(FSMONITOR)$(EXEC_EXT)
  
- $(FSMONITOR)$(EXEC_EXT): $(FSMCAMLOBJS) $(FSMCOBJS)
+ $(FSMONITOR)$(EXEC_EXT): $(COMPATOCAMLOBJS) $(FSMCAMLOBJS) $(FSMCOBJS)
  	@echo Linking $@
 -	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
 +	$(CAMLC) -verbose $(CAMLFLAGS) $(CAMLLDFLAGS) -o $@ $(CAMLLINKFLAGS) $(FSMCAMLLIBS) $^ $(CLIBS)
