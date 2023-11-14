@@ -1,0 +1,6 @@
+mkdir -p %{buildroot}/usr/bin
+install -m0755 -t %{buildroot}/usr/bin src/unison src/unison-fsmonitor
+mkdir -p %{buildroot}/usr/share/man/man1
+install -m0755 -t %{buildroot}/usr/share/man/man1 man/unison.1
+mkdir -p %{buildroot}/usr/share/doc/unison
+install -m0755 -t %{buildroot}/usr/share/doc/unison doc/unison-manual.*
