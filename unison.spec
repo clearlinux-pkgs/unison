@@ -7,7 +7,7 @@
 #
 Name     : unison
 Version  : 2.53.5
-Release  : 10
+Release  : 11
 URL      : https://github.com/bcpierce00/unison/archive/v2.53.5/unison-2.53.5.tar.gz
 Source0  : https://github.com/bcpierce00/unison/archive/v2.53.5/unison-2.53.5.tar.gz
 Summary  : No detailed summary available
